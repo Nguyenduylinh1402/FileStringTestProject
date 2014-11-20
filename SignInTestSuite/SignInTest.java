@@ -80,7 +80,7 @@ public class SignInTest extends UiAutomatorTestCase {
 		if (signIn.exists()) {
 			signIn.click();
 		}
-
+		
 		// CODE:END
 		System.out.println("testcase execution completed");
 	}

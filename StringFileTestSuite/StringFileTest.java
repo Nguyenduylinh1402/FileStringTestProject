@@ -1,5 +1,7 @@
 package FileStringTestProject.StringFileTestSuite;
 
+import java.util.concurrent.TimeUnit;
+
 import android.os.RemoteException;
 
 import com.android.uiautomator.core.UiDevice;
@@ -122,12 +124,16 @@ public class StringFileTest extends UiAutomatorTestCase {
 			// //Looking for file
 			appFolder.setAsVerticalList();
 
+			// *[@id="user-links"]/li[1]/a/span/span
+
 			if (i == 0) {
 				file = appFolder.getChildByText(
 						new UiSelector().resourceId("com.rhmsoft.fm:id/name")
 								.className("android.widget.TextView"),
 						"Chuyen Mua - Trung Quan Idol.mp3", true);
-
+				// English Classes-Elementary.pdf English
+				// Classes-Preintermediate.pdf HR-DEPENDENT REGISTRATION
+				// FORM.doc
 			} else if (i == 1) {
 				file = appFolder.getChildByText(
 						new UiSelector().resourceId("com.rhmsoft.fm:id/name")
@@ -135,7 +141,7 @@ public class StringFileTest extends UiAutomatorTestCase {
 						"Can do list_softskills.docx", true);
 			}
 			assertTrue("Click data Failed", file.exists());
-			file.clickAndWaitForNewWindow();
+			file.clickAndWaitForNewWindow(5000);
 			// Fill email
 			emailEditText = uiScrollableStringFile
 					.getChildByText(
@@ -146,8 +152,8 @@ public class StringFileTest extends UiAutomatorTestCase {
 							"Type Names or Email Addresses");
 
 			if (emailEditText.exists()) {
-				emailEditText.click();
-				emailEditText.setText("sta001@yopmail.com");
+				emailEditText.clickAndWaitForNewWindow();
+				emailEditText.setText("sta005@yopmail.com");
 			}
 
 			// Send String File
@@ -155,32 +161,232 @@ public class StringFileTest extends UiAutomatorTestCase {
 			sendStringFile.clickAndWaitForNewWindow();
 
 			// -------Notification Test--------------//
+			UiDevice deviceInstance = UiDevice.getInstance();
+			UiScrollable notiBar = new UiScrollable(new UiSelector()
+					.className("android.widget.ScrollView")
+					.resourceId("com.android.systemui:id/scroll")
+					.scrollable(false));
+			deviceInstance.openNotification();
 
-			// Performs a swipe from one coordinate to another using the number
-			// of steps to determine smoothness and speed. Each step execution
-			// is throttled to 5ms per step. So for a 100 steps, the swipe will
-			// take about 1/2 second to complete.
-			// UiDevice deviceInstance = UiDevice.getInstance();
-			// deviceInstance.openNotification();// or
+			// CODE:START
+			UiScrollable appViews = new UiScrollable(
+					new UiSelector().scrollable(true));
+			// Set the swiping mode to horizontal (the default is vertical)
+			// appViews.setAsHorizontalList();
+			// appViews.scrollToBeginning(10); // Otherwise the Apps may be on a
+			// later
+			// page of apps.
+			// int maxSearchSwipes = appViews.getMaxSearchSwipes();
 
-			// int dHeight = deviceInstance.getDisplayHeight();
-			// int dWidth = deviceInstance.getDisplayWidth();
-			// System.out.println("height =" + dHeight);
-			// System.out.println("width =" + dWidth);
-			// int xScrollPosition = dWidth / 2;
-			// int yScrollStop = dHeight / 2;
-			// UiDevice.getInstance().swipe(xScrollPosition, 0, xScrollPosition,
-			// yScrollStop, 100);
-			// --------------------//
-			// UiSelector selector = null;
-			// UiObject noti = new UiObject(selector);
-			// if (selector.equals("Upload file failed")) {
+			UiSelector selector;
+			selector = new UiSelector().className(
+					android.widget.TextView.class.getName()).resourceId(
+					"android:id/title");
+
+			UiObject appToLaunch;
+
+			// The following loop is to workaround a bug in Android 4.2.2 which
+			// fails to scroll more than once into view.
+			for (int a = 0; a < 5; a++) {
+
+				try {
+					try {
+						Thread.sleep(5000); // 1000 milliseconds is one second.
+					} catch (InterruptedException ex) {
+						Thread.currentThread().interrupt();
+					}
+					appToLaunch = notiBar.getChildByText(selector,
+							"File uploaded");
+
+					if (appToLaunch != null) {
+						// Create a UiSelector to find the Settings app and
+						// simulate
+						// a user click to launch the app.
+						// appToLaunch.clickAndWaitForNewWindow();
+						deviceInstance.pressBack();
+						break;
+					}
+				} catch (UiObjectNotFoundException e) {
+					System.out.println("Did not find match for "
+							+ e.getLocalizedMessage());
+					deviceInstance.pressBack();
+				}
+
+				// for (int j = 0; j < i; j++) {
+				// appViews.scrollForward();
+				// System.out.println("scrolling forward 1 page of apps.");
+				// }
+				// notiBar.scrollBackward();
+				// notiBar.scrollToBeginning(10);
+				// deviceInstance.openNotification();
+			}
+
+			UiScrollable checkFileString = new UiScrollable(new UiSelector().className(
+					"android.widget.ListView").scrollable(true));
+
+			UiSelector fileSelector;
+			fileSelector = new UiSelector().className(android.widget.TextView.class.getName());
+			UiObject fileObject;
+			
+			for (int a = 0; a < 5; a++) {
+
+				try {
+					try {
+						Thread.sleep(5000); // 1000 milliseconds is one second.
+					} catch (InterruptedException ex) {
+						Thread.currentThread().interrupt();
+					}
+					fileObject = checkFileString.getChildByText(fileSelector,
+							"Chuyen Mua - Trung Quan Idol.mp3");
+
+					if (fileObject != null) {
+						// Create a UiSelector to find the Settings app and
+						// simulate
+						// a user click to launch the app.
+						 fileObject.clickAndWaitForNewWindow();
+						//deviceInstance.pressBack();
+						break;
+					}
+				} catch (UiObjectNotFoundException e) {
+					System.out.println("Did not find match for "
+							+ e.getLocalizedMessage());
+					deviceInstance.pressBack();
+				}
+
+			}
+			
+//			UiObject filename = checkFileString
+//					.getChildByText(
+//							new UiSelector()
+//									.className("android.widget.TextView")
+//									.resourceId(
+//											"com.filestring.lattedouble:id/txtfile_item_name"),
+//							"20140604_220.jpg", true);
+//			filename.click();
+			
+			
+			// //Check file in all file
 			//
+			// UiScrollable notiBar1 = new UiScrollable(new UiSelector()
+			// .className("android.widget.ListView")
+			// .resourceId("com.filestring.lattedouble:id/file_list_listview")
+			// .scrollable(true));
+			//
+			// UiSelector selector1;
+			// selector1 = new UiSelector().className(
+			// android.widget.TextView.class.getName()).resourceId(
+			// "com.filestring.lattedouble:id/txtfile_item_name");
+			//
+			// UiObject appToLaunch1;
+			//
+			// // The following loop is to workaround a bug in Android 4.2.2
+			// which
+			// // fails to scroll more than once into view.
+			// for (int a = 0; a < 5; a++) {
+			//
+			// try {
+			// try {
+			// Thread.sleep(5000); // 1000 milliseconds is one second.
+			// } catch (InterruptedException ex) {
+			// Thread.currentThread().interrupt();
 			// }
+			// appToLaunch1 = notiBar1.getChildByText(selector1,
+			// "PL_15_businessethics.ppt");
+			//
+			// if (appToLaunch1 != null) {
+			// // Create a UiSelector to find the Settings app and
+			// // simulate
+			// // a user click to launch the app.
+			// appToLaunch1.clickAndWaitForNewWindow();
+			// //deviceInstance.pressBack();
+			// break;
+			// }
+			// } catch (UiObjectNotFoundException e) {
+			// System.out.println("Did not find match for "
+			// + e.getLocalizedMessage());
+			// deviceInstance.pressBack();
+			// }
+			//
+			// // for (int j = 0; j < i; j++) {
+			// // appViews.scrollForward();
+			// // System.out.println("scrolling forward 1 page of apps.");
+			// // }
+			// // notiBar.scrollBackward();
+			// // notiBar.scrollToBeginning(10);
+			// // deviceInstance.openNotification();
+			// }
+			//
+			// // Performs a swipe from one coordinate to another using the
+			// number
+			// // of steps to determine smoothness and speed. Each step
+			// execution
+			// // is throttled to 5ms per step. So for a 100 steps, the swipe
+			// will
+			// // take about 1/2 second to complete.
+			// UiDevice deviceInstance = UiDevice.getInstance();
+			// // or
+			// UiScrollable notiBar = new UiScrollable(new UiSelector()
+			// .className("android.widget.FrameLayout")
+			// .resourceId("com.android.systemui:id/notification_panel")
+			// .scrollable(false));
+			// // .resourceId("com.android.systemui:id/notification_panel")
+			// // .scrollable(false));
+			// // for (int j = 0; j < 4; j++) {
+			// deviceInstance.openNotification();
+			// // try {
+			// // TimeUnit.SECONDS.sleep(10);
+			// // } catch (InterruptedException e) {
+			// // // TODO Auto-generated catch block
+			// // e.printStackTrace();
+			// // }
+			// //Khong co title thi ko clic duoc usb debugging mac du co quet
+			// list noti
+			// UiObject openNoti = notiBar.getChildByText(new UiSelector()
+			// .resourceId(android.widget.TextView.class.getName())
+			// .resourceId("android:id/title"), "USB debugging connected");
+			//
+			// if (openNoti.exists()) {
+			// openNoti.click();
+			// }
+			//
+			// // UiObject listFile = notiBar.getChildByText(new UiSelector(),
+			// // "PL_15_businessethics.ppt", true);
+			// // if(listFile.exists()){
+			// // listFile.click();
+			// // }
+			// // }
+			//
+			// // int dHeight = deviceInstance.getDisplayHeight();
+			// // int dWidth = deviceInstance.getDisplayWidth();
+			// // System.out.println("height =" + dHeight);
+			// // System.out.println("width =" + dWidth);
+			// // int xScrollPosition = dWidth / 2;
+			// // int yScrollStop = dHeight / 2;
+			// // UiDevice.getInstance().swipe(xScrollPosition, 0,
+			// xScrollPosition,
+			// // yScrollStop, 100);
+			// // --------------------//
+			// // UiSelector selector = null;
+			// // UiObject noti = new UiObject(selector);
+			// // if (selector.equals("Upload file failed")) {
+			// //
+			// // }
 
 		}
 		// CODE:END
 		System.out.println("testcase execution completed");
+	}
+
+	public void tearDown() throws Exception {
+
+	}
+
+	public static void checkFileUploaded(final UiAutomatorTestCase test,
+			int times) {
+		while (times > 0) {
+			test.getUiDevice().pressBack();
+			times--;
+		}
 	}
 
 }
