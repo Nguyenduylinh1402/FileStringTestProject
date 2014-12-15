@@ -1,5 +1,7 @@
 package FileStringTestProject.ClassUtils;
 
+import java.io.File;
+
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -162,14 +164,16 @@ public class ClassUtils {
 		UiSelector listViewItemSelector;
 
 		listViewItemSelector = new UiSelector().className(
-				android.widget.TextView.class.getName()).textContains(name);
+				android.widget.TextView.class.getName());
 		UiObject listViewItem;
+
+		File path = new File("/sdcard/AutomationScreenShot/" + name);
 		for (int i = 0; i < 10; i++) {
 			try {
 				Thread.sleep(5000);
-				// listViewItem = listView.getChildByText(listViewItemSelector,
-				// name);
-				listViewItem = listView.getChild(listViewItemSelector);
+				listViewItem = listView.getChildByText(listViewItemSelector,
+						name);
+				//listViewItem = listView.getChild(listViewItemSelector);
 
 				if (listViewItem != null) {
 					if (action == ACTION_CLICK) {
@@ -178,6 +182,7 @@ public class ClassUtils {
 								.println("\"" + name + "\" item was clicked.");
 					} else if (action == ACTION_TAKE_SCREENSHOT) {
 						// TODO TAKE SCREENSHOT
+						UiDevice.getInstance().takeScreenshot(path);
 
 					}
 
