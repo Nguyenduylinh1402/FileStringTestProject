@@ -2,6 +2,7 @@ package FileStringTestProject.ClassUtils;
 
 import java.io.File;
 
+import android.graphics.Rect;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -152,6 +153,39 @@ public class ClassUtils {
 		}
 	}
 
+	public static void openFileDetails(String name) throws UiObjectNotFoundException {
+
+		UiScrollable listView = new UiScrollable(
+				new UiSelector().className("android.widget.ListView"));
+
+		UiSelector listViewItemSelector;
+
+		listViewItemSelector = new UiSelector()
+				.className(android.widget.TextView.class.getName());
+		UiObject listViewItem;
+
+		for (int i = 0; i < 10; i++) {
+			try {
+				Thread.sleep(5000);
+				listViewItem = listView.getChildByText(listViewItemSelector,
+						name);
+				if (listViewItem != null) {
+					Rect rect = listViewItem.getBounds();
+					Rect rect1 = new Rect();
+					rect1.set(rect.left + 479, rect.top - 20, rect.right + 130,
+							rect.bottom + 49);
+					UiDevice.getInstance().click(rect1.centerX(),
+							rect1.centerY());
+					System.out.println("\"" + name + "\" Detail was clicked.");
+					break;
+				}
+			} catch (Exception e) {
+				System.out.println("Did not find match for "
+						+ e.getLocalizedMessage());
+			}
+		}
+	}
+
 	public static void invokeListViewItem(String className, String name,
 			int action) throws UiObjectNotFoundException {
 
@@ -163,8 +197,8 @@ public class ClassUtils {
 
 		UiSelector listViewItemSelector;
 
-		listViewItemSelector = new UiSelector().className(
-				android.widget.TextView.class.getName());
+		listViewItemSelector = new UiSelector()
+				.className(android.widget.TextView.class.getName());
 		UiObject listViewItem;
 
 		File path = new File("/sdcard/AutomationScreenShot/" + name);
@@ -173,7 +207,7 @@ public class ClassUtils {
 				Thread.sleep(5000);
 				listViewItem = listView.getChildByText(listViewItemSelector,
 						name);
-				//listViewItem = listView.getChild(listViewItemSelector);
+				// listViewItem = listView.getChild(listViewItemSelector);
 
 				if (listViewItem != null) {
 					if (action == ACTION_CLICK) {
