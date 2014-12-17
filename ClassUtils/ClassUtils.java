@@ -29,14 +29,56 @@ public class ClassUtils {
 	public final static String LISTVIEW_CLASSNAME = "android.widget.ListView";
 	public final static String SCROLLVIEW_CLASSNAME = "android.widget.ScrollView";
 	public final static String FILE_MANAGER = "File Manager";
-	public final static String DATA_FOLDER = "data";
+	public final static String FOLDER_DATA = "data";
+
+	public static final String ID_HOME = "android:id/home";
+	public static final String ID_EXPAND_USER = "com.filestring.lattedouble:id/drawer_users_expand";
+
+	public static void switchAccount(String email)
+			throws UiObjectNotFoundException {
+		clickItemID(ID_HOME);
+		clickItemID(ID_EXPAND_USER);
+		clickItemText(email);
+	}
+
+	public static void clickFalseChecked(String resourceID)
+			throws UiObjectNotFoundException {
+		UiObject itemChecked = new UiObject(new UiSelector().resourceId(
+				resourceID).checked(false));
+		itemChecked.click();
+	}
+
+	public static void clickItemID(String resourceID)
+			throws UiObjectNotFoundException {
+		UiObject itemClick = new UiObject(
+				new UiSelector().resourceId(resourceID));
+		// assertTrue("Cannot find " + resourceID, itemClick.exists());
+		itemClick.clickAndWaitForNewWindow();
+		System.out.println("\"" + resourceID + "\" item was clicked.");
+	}
+
+	public static void clickItemText(String text)
+			throws UiObjectNotFoundException {
+		UiObject itemClick = new UiObject(new UiSelector().text(text));
+		// assertTrue("Cannot find " + text, itemClick.exists());
+		itemClick.clickAndWaitForNewWindow();
+		System.out.println("\"" + text + "\" item was clicked.");
+
+	}
+
+	public static void invokeFolderSenderFromRecipient(String senderName)
+			throws UiObjectNotFoundException {
+		invokeListViewItem(LISTVIEW_CLASSNAME,
+				DataFill.FILESTRING_RECEIVED_FILES, ACTION_CLICK);
+		invokeListViewItem(LISTVIEW_CLASSNAME, senderName, ACTION_CLICK);
+	}
 
 	public static void selectItem(String fileName)
 			throws UiObjectNotFoundException {
 		// select FileManager
 		invokeListViewItem(LISTVIEW_CLASSNAME, FILE_MANAGER, ACTION_CLICK);
 		// select folder "data"
-		invokeListViewItem(LISTVIEW_CLASSNAME, DATA_FOLDER, ACTION_CLICK);
+		invokeListViewItem(LISTVIEW_CLASSNAME, FOLDER_DATA, ACTION_CLICK);
 		// select file "fileName"
 		invokeListViewItem(LISTVIEW_CLASSNAME, fileName, ACTION_CLICK);
 	}
@@ -153,7 +195,8 @@ public class ClassUtils {
 		}
 	}
 
-	public static void openFileDetails(String name) throws UiObjectNotFoundException {
+	public static void openFileDetails(String name)
+			throws UiObjectNotFoundException {
 
 		UiScrollable listView = new UiScrollable(
 				new UiSelector().className("android.widget.ListView"));
@@ -228,6 +271,11 @@ public class ClassUtils {
 			}
 		}
 
+	}
+
+	public static void takeScreenShot(String goal) {
+		File path = new File("/sdcard/AutomationScreenShot/" + goal + ".png");
+		UiDevice.getInstance().takeScreenshot(path);
 	}
 
 	// Open Notification Bar
